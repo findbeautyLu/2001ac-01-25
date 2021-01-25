@@ -1,0 +1,4 @@
+## modbus rtu protocol 
+- slave program
+- 4X类型的寄存器
+- 支持命令0x03 0x06 0x10 0x17 

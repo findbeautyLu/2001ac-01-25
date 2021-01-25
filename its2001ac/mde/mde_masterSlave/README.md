@@ -1,0 +1,3 @@
+## modbus rtu protocol 
+- master program
+- support command 0x03 0x06 0x10 0x17
