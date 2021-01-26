@@ -153,126 +153,134 @@ bool APP_push_aricod_message(uint16_t in_reg_add,uint16_t in_reg_value)
     } 
     else if((in_reg_add >= 5001) && (in_reg_add <= 5052))
     {
-       aircodMesBuff_5001[(in_reg_add-5001)] = in_reg_value;
-       switch(in_reg_add)
+       if(aircodMesBuff_5001[(in_reg_add-5001)] != in_reg_value)
        {
-           case DRIVE_BOARD_SET_MODE:
-           {
-               updataWord |= SET_MODE_BIT;
+		   aircodMesBuff_5001[(in_reg_add-5001)] = in_reg_value;
+	       switch(in_reg_add)
+	       {
+	           case DRIVE_BOARD_SET_MODE:
+	           {
+	               updataWord |= SET_MODE_BIT;
 
-			   //这边要删除
-			   //若模式为制冷或者除湿
-			   //设置制冷回风温度，若无数据则推一个默认数据上去。4x5007 数组下标[7-1]赋值
-			   //设置相对湿度，若无数据则推一个默认数据上去。4x5009 数组下标[9-1]赋值
-			   //设置制冷出水设置温度，若无数据则推一个默认数据上去。4x5024 数组下标[24-1]赋值
-			   //设置制冷回水设置温度，若无数据则推一个默认数据上去。4x5025 数组下标[25-1]赋值
-			   //设置电动二通阀状态，4x5042 数组下标[42-1]赋值
+				   //这边要删除
+				   //若模式为制冷或者除湿
+				   //设置制冷回风温度，若无数据则推一个默认数据上去。4x5007 数组下标[7-1]赋值
+				   //设置相对湿度，若无数据则推一个默认数据上去。4x5009 数组下标[9-1]赋值
+				   //设置制冷出水设置温度，若无数据则推一个默认数据上去。4x5024 数组下标[24-1]赋值
+				   //设置制冷回水设置温度，若无数据则推一个默认数据上去。4x5025 数组下标[25-1]赋值
+				   //设置电动二通阀状态，4x5042 数组下标[42-1]赋值
 
-			   //若模式为制热模式
-			   //设置制热回风温度，若无数据则推一个默认数据上去。4x5008 数组下标[8-1]赋值
-			   //设置制热出水温度，若无数据则推一个默认数据上去。4x5026 数组下标[26-1]赋值
-			   //设置制热回水温度，若无数据则推一个默认数据上去。4x5027 数组下标[27-1]赋值
+				   //若模式为制热模式
+				   //设置制热回风温度，若无数据则推一个默认数据上去。4x5008 数组下标[8-1]赋值
+				   //设置制热出水温度，若无数据则推一个默认数据上去。4x5026 数组下标[26-1]赋值
+				   //设置制热回水温度，若无数据则推一个默认数据上去。4x5027 数组下标[27-1]赋值
 
-			   //室内电动二通阀(预冷/预热)				4x5024 这边没实现
-			   //室内风机实际转速					4x5062
-			   
-			   if(in_reg_value == 1 || in_reg_value == 3)//制冷 | 除湿
-			   {
-			   		updataWord |= SET_COLD_BACKWIND_SETTEMP_BIT;//制冷回风温度5007
-					if(app_general_pull_coolbackwind_set_temp() == 0)
-					{
-						app_general_push_coolbackwind_set_temp(150);
-					}
-					aircodMesBuff_5001[6] = app_general_pull_coolbackwind_set_temp();//5007-5001制冷回风设置温度
-					
-					updataWord |= SET_HUMIDITY_BIT;
-					aircodMesBuff_5001[8] = app_general_pull_aircod_humidity()*10;//5009-5001相对湿度设置
-					//
+				   //室内电动二通阀(预冷/预热)				4x5024 这边没实现
+				   //室内风机实际转速					4x5062
+				   
+				   /*
+
+				   if(in_reg_value == 1 || in_reg_value == 3)//制冷 | 除湿
+				   {
+				   		//updataWord |= SET_COLD_BACKWIND_SETTEMP_BIT;//制冷回风温度5007
+						//if(app_general_pull_coolbackwind_set_temp() == 0)
+						//{
+						//	app_general_push_coolbackwind_set_temp(150);
+						//}
+						//aircodMesBuff_5001[6] = app_general_pull_coolbackwind_set_temp();//5007-5001制冷回风设置温度
+						
+						//updataWord |= SET_HUMIDITY_BIT;
+						//aircodMesBuff_5001[8] = app_general_pull_aircod_humidity()*10;//5009-5001相对湿度设置
+						//
+						//updataWord |= SET_SUPPLY_COLD_OUTWATER_BIT;
+						if(app_general_pull_cooloutwater_set_temp() == 0)
+						//{
+						//	app_general_push_cooloutwater_set_temp(200);
+						//}
+						aircodMesBuff_5001[23] = app_general_pull_cooloutwater_set_temp();//5024-5001制冷出水设置温度
+						
+						//					
+						updataWord |= SET_SUPPLY_COLD_BIT;
+						if(app_general_pull_coolbackwater_set_temp() == 0)
+						{
+							app_general_push_coolbackwater_set_temp(200);
+						}
+						aircodMesBuff_5001[24] = app_general_pull_coolbackwater_set_temp();//5025-5001制冷回水设置温度
+						updataWord |= TWO_WAY_STATE_BIT;
+						aircodMesBuff_5001[41] = 1;
+				   }
+				   else if(in_reg_value == 2)//制热
+				   {
+					   updataWord |= SET_HOT_BACKWIND_SETTEMP_BIT;//制热回风设置温度5008
+					   if(app_general_pull_hotbackwind_set_temp() == 0)
+					   {
+						   app_general_push_hotbackwind_set_temp(350);
+					   }
+					   aircodMesBuff_5001[7] = app_general_pull_hotbackwind_set_temp();
+					   
+					   updataWord |= SET_SUPPLY_HOT_OUTWATER_BIT;//制热出水设置温度5026
+					   if(app_general_pull_hotoutwater_set_temp() == 0)
+					   {
+						   app_general_push_hotoutwater_set_temp(350);
+					   }
+					   aircodMesBuff_5001[25] = app_general_pull_hotoutwater_set_temp();
+					   
+					   updataWord |= SET_SUPPLY_WARM_BIT;//制热回水
+					   if(app_general_pull_hotbackwater_set_temp() == 0)
+					   {
+						   app_general_push_hotbackwater_set_temp(350);
+					   }
+					   aircodMesBuff_5001[26] = app_general_pull_hotbackwater_set_temp();
+				   }
+
+				   */
+
+	               break;
+	           }
+	           case DRIVE_BOARD_POWER_ON_OFF:
+	           {
+	               updataWord |= SET_POWER_BIT;
+	               break;
+	           }
+			   case DRIVE_BOARD_COOL_SET_TEMP://制冷回风设置温度5007 1
+				    updataWord |= SET_COLD_BACKWIND_SETTEMP_BIT;
+			   		break;
+			   case DRIVE_BOARD_HOT_SET_TEMP://制热回风设置温度5008
+					updataWord |= SET_HOT_BACKWIND_SETTEMP_BIT;
+			   		break;
+			   case DRIVE_BOARD_HUMIDITY_SET_TEMP://湿度设置5009
+				    updataWord |= SET_HUMIDITY_BIT;
+			   		break;
+			   case DRIVE_BOARD_LIFE_HOTWATER_SET_TEMP://生活热水5010
+					updataWord |= SET_LIFE_HOTWATER_BIT;
+					break;
+			   case DRIVE_BOARD_COOL_OUTWATER_SETTEMP://制冷出水设置温度5024
 					updataWord |= SET_SUPPLY_COLD_OUTWATER_BIT;
-					if(app_general_pull_cooloutwater_set_temp() == 0)
-					{
-						app_general_push_cooloutwater_set_temp(200);
-					}
-					aircodMesBuff_5001[23] = app_general_pull_cooloutwater_set_temp();//5024-5001制冷出水设置温度
-					
-					//					
-					updataWord |= SET_SUPPLY_COLD_BIT;
-					if(app_general_pull_coolbackwater_set_temp() == 0)
-					{
-						app_general_push_coolbackwater_set_temp(200);
-					}
-					aircodMesBuff_5001[24] = app_general_pull_coolbackwater_set_temp();//5025-5001制冷回水设置温度
+					break;
+	           case DRIVE_BOARD_COOL_BACKWATER_SETTEMP://制冷回水设置温度
+	           {
+	                updataWord |= SET_SUPPLY_COLD_BIT;
+	                break;
+	           }
+			   case DRIVE_BOARD_HOT_OUTWATER_SETTEMP://制热出水设置温度
+					updataWord |= SET_SUPPLY_HOT_OUTWATER_BIT;
+			   	    break;
+	           case DRIVE_BOARD_HOT_BACKWATER_SETTEMP:
+	           {
+	                updataWord |= SET_SUPPLY_WARM_BIT;
+	                break;
+	           }
+			   case DRIVE_BOARD_TWO_WAY_VALUE_STATE://室内电动二通阀状态5042
 					updataWord |= TWO_WAY_STATE_BIT;
-					aircodMesBuff_5001[41] = 1;
-			   }
-			   else if(in_reg_value == 2)//制热
-			   {
-				   updataWord |= SET_HOT_BACKWIND_SETTEMP_BIT;//制热回风设置温度5008
-				   if(app_general_pull_hotbackwind_set_temp() == 0)
-				   {
-					   app_general_push_hotbackwind_set_temp(350);
-				   }
-				   aircodMesBuff_5001[7] = app_general_pull_hotbackwind_set_temp();
-				   
-				   updataWord |= SET_SUPPLY_HOT_OUTWATER_BIT;//制热出水设置温度5026
-				   if(app_general_pull_hotoutwater_set_temp() == 0)
-				   {
-					   app_general_push_hotoutwater_set_temp(350);
-				   }
-				   aircodMesBuff_5001[25] = app_general_pull_hotoutwater_set_temp();
-				   
-				   updataWord |= SET_SUPPLY_WARM_BIT;//制热回水
-				   if(app_general_pull_hotbackwater_set_temp() == 0)
-				   {
-					   app_general_push_hotbackwater_set_temp(350);
-				   }
-				   aircodMesBuff_5001[26] = app_general_pull_hotbackwater_set_temp();
-			   }
+			        break;
+			   case DRIVE_BOARD_INDOOR_MESSAGE://室内回风湿度值5047 间隔一段时间10s/20s 写入一次 用10指令写入
+			   		updataWord |= INSIDE_BACKWIND_HUMIDITY_BIT;
+				   break;
+	           default:break;
+	       }
+	       return true;
+	   }
 
-               break;
-           }
-           case DRIVE_BOARD_POWER_ON_OFF:
-           {
-               updataWord |= SET_POWER_BIT;
-               break;
-           }
-		   case DRIVE_BOARD_COOL_SET_TEMP://制冷回风设置温度5007
-			    updataWord |= SET_COLD_BACKWIND_SETTEMP_BIT;
-		   		break;
-		   case DRIVE_BOARD_HOT_SET_TEMP://制热回风设置温度5008
-				updataWord |= SET_HOT_BACKWIND_SETTEMP_BIT;
-		   		break;
-		   case DRIVE_BOARD_HUMIDITY_SET_TEMP://制热回风设置温度5009
-			    updataWord |= SET_HUMIDITY_BIT;
-		   		break;
-		   case DRIVE_BOARD_LIFE_HOTWATER_SET_TEMP://生活热水5010
-				updataWord |= SET_LIFE_HOTWATER_BIT;
-				break;
-		   case DRIVE_BOARD_COOL_OUTWATER_SETTEMP://制冷出水设置温度5024
-				updataWord |= SET_SUPPLY_COLD_OUTWATER_BIT;
-				break;
-           case DRIVE_BOARD_COOL_BACKWATER_SETTEMP://制冷回水设置温度
-           {
-                updataWord |= SET_SUPPLY_COLD_BIT;
-                break;
-           }
-		   case DRIVE_BOARD_HOT_OUTWATER_SETTEMP://制热出水设置温度
-				updataWord |= SET_SUPPLY_HOT_OUTWATER_BIT;
-		   	    break;
-           case DRIVE_BOARD_HOT_BACKWATER_SETTEMP:
-           {
-                updataWord |= SET_SUPPLY_WARM_BIT;
-                break;
-           }
-		   case DRIVE_BOARD_TWO_WAY_VALUE_STATE://室内电动二通阀状态5042
-				updataWord |= TWO_WAY_STATE_BIT;
-		        break;
-		   case DRIVE_BOARD_INDOOR_MESSAGE://室内回风湿度值5047 间隔一段时间10s/20s 写入一次 用10指令写入
-		   		updataWord |= INSIDE_BACKWIND_HUMIDITY_BIT;
-			   break;
-           default:break;
-       }
-       return true;
     } 
     return false;
 }
@@ -296,7 +304,7 @@ bool _push_aricod_message(uint16_t in_reg_add,uint16_t in_reg_value)
                AirRunMode_Def mode = app_general_pull_aircod_mode();
                if(aircodMesBuff_5001[0] != mode)
                {
-                   app_general_push_aircod_mode(mode);
+                   app_general_push_aircod_mode(mode);				   
                }           
                break;
            }

@@ -204,19 +204,22 @@ bool  app_general_pull_humidity_output(void);
 /*综合传感器故障*/
 bool pull_integrated_sensor_error(void);
 
-/*外机接口映射*/
+/*外机接口映射 写*/
+void app_general_push_cool_backwind_settemp(uint16_t in_settemp);
+void app_general_push_hot_backwind_settemp(uint16_t in_settemp);
+void app_general_push_cool_humidity_set(uint16_t in_setvalue);
+void app_general_push_lifehotwater_settemp(uint16_t in_settemp);
+void app_general_push_cool_outwater_settemp(uint16_t in_settemp);
+void app_general_push_cool_backwater_settemp(uint16_t in_settemp);
+void app_general_push_hot_outwater_settemp(uint16_t in_settemp);
+void app_general_push_hot_backwater_settemp(uint16_t in_settemp);
+/*外机接口映射 读*/
 int16_t app_general_pull_coolbackwind_set_temp(void);
-void app_general_push_coolbackwind_set_temp(int16_t in_set_temp);
 int16_t app_general_pull_hotbackwind_set_temp(void);
-void app_general_push_hotbackwind_set_temp(int16_t in_set_temp);
 int16_t app_general_pull_cooloutwater_set_temp(void);
-void app_general_push_cooloutwater_set_temp(int16_t in_set_temp);
 int16_t app_general_pull_coolbackwater_set_temp(void);
-void app_general_push_coolbackwater_set_temp(int16_t in_set_temp);
 int16_t app_general_pull_hotoutwater_set_temp(void);
-void app_general_push_hotoutwater_set_temp(int16_t in_set_temp);
 int16_t app_general_pull_hotbackwater_set_temp(void);
-void app_general_push_hotbackwater_set_temp(int16_t in_set_temp);
 
 
 

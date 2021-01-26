@@ -507,7 +507,8 @@ bool app_modebus_write_reg_data(uint16_t regAddress,uint16_t reg_detailes)
         }
         case REG_ADDR_FAN_SET_HUM:
         {
-            app_general_push_aircod_humidity(reg_detailes);
+            //app_general_push_aircod_humidity(reg_detailes);
+			app_general_push_cool_humidity_set(reg_detailes);
             break;
         }
         case REG_ADDR_FAN_SET_SPEED:
@@ -567,7 +568,8 @@ bool app_modebus_write_reg_data(uint16_t regAddress,uint16_t reg_detailes)
         }
         case REG_ADDR_MASTER_SET_LIVING_WATER_TEMP:
         {
-            app_general_push_set_living_water_temp(reg_detailes);
+            //app_general_push_set_living_water_temp(reg_detailes);
+			app_general_push_lifehotwater_settemp(reg_detailes);
             break;
         }
         case REG_ADDR_MASTER_OUTDOOR_IN_FAN_TEMP:
@@ -820,22 +822,22 @@ bool app_modebus_write_reg_data(uint16_t regAddress,uint16_t reg_detailes)
             break;
         }
 		case REG_ADRESS_COOL_BACKWIND_SETTEMP  : 
-			app_general_push_coolbackwind_set_temp(reg_detailes);
+			app_general_push_cool_backwind_settemp(reg_detailes);
 			break;
 		case REG_ADRESS_HOT_BACKWIND_SETTEMP   : 
-			app_general_push_hotbackwind_set_temp(reg_detailes);
+			app_general_push_hot_backwind_settemp(reg_detailes);
 			break;
 		case REG_ADRESS_COOL_OUTWATER_SETTEMP  : 
-			app_general_push_cooloutwater_set_temp(reg_detailes);
+			app_general_push_cool_outwater_settemp(reg_detailes);
 			break;
 		case REG_ADRESS_HOT_OUTWATER_SETTEMP   : 
-			app_general_push_hotoutwater_set_temp(reg_detailes);
+			app_general_push_hot_outwater_settemp(reg_detailes);
 			break;
 		case REG_ADRESS_COOL_BACKWATER_SETTEMP : 
-			app_general_push_coolbackwater_set_temp(reg_detailes);
+			app_general_push_cool_backwater_settemp(reg_detailes);
 			break;
 		case REG_ADRESS_HOT_BACKWATER_SETTEMP  : 
-			app_general_push_hotbackwater_set_temp(reg_detailes);
+			app_general_push_hot_backwater_settemp(reg_detailes);
 			break;		
         default:
         {
