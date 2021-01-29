@@ -83,12 +83,12 @@ typedef union
         int16_t                  adjust_exhast_air_temp;
         int16_t                  adjust_exhast_air_co2;
         int16_t                  adjust_exhast_air_pm25; 
-        int16_t                  cool_backwind_settemp;
-        int16_t                  hot_backwind_settemp; 
-        int16_t                  cool_outwater_settemp;
-        int16_t                  cool_backwater_settemp; 
-        int16_t                  hot_outwater_settemp;
-        int16_t                  hot_backwater_settemp; 
+        uint16_t                  cool_backwind_settemp;
+        uint16_t                  hot_backwind_settemp; 
+        uint16_t                  cool_outwater_settemp;
+        uint16_t                  cool_backwater_settemp; 
+        uint16_t                  hot_outwater_settemp;
+        uint16_t                  hot_backwater_settemp; 
         bool                     mildewFlag;                //除霉
         bool                     systemPower;               //开关机
     };

@@ -213,6 +213,8 @@ void app_general_push_cool_outwater_settemp(uint16_t in_settemp);
 void app_general_push_cool_backwater_settemp(uint16_t in_settemp);
 void app_general_push_hot_outwater_settemp(uint16_t in_settemp);
 void app_general_push_hot_backwater_settemp(uint16_t in_settemp);
+void app_general_push_two_value_state(uint16_t in_state);
+
 /*外机接口映射 读*/
 int16_t app_general_pull_coolbackwind_set_temp(void);
 int16_t app_general_pull_hotbackwind_set_temp(void);
@@ -220,6 +222,8 @@ int16_t app_general_pull_cooloutwater_set_temp(void);
 int16_t app_general_pull_coolbackwater_set_temp(void);
 int16_t app_general_pull_hotoutwater_set_temp(void);
 int16_t app_general_pull_hotbackwater_set_temp(void);
+int16_t app_general_pull_humidity_setvalue(void);
+int16_t app_general_pull_life_hotwater_settemp(void);
 
 
 

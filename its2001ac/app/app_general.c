@@ -205,6 +205,12 @@ void app_general_push_hot_backwater_settemp(uint16_t in_settemp)
 	APP_push_aricod_message(DRIVE_BOARD_HOT_BACKWATER_SETTEMP,StoRunParameter.hot_backwater_settemp);
 }
 
+void app_general_push_two_value_state(uint16_t in_state)
+{
+
+	APP_push_aricod_message(DRIVE_BOARD_TWO_WAY_VALUE_STATE,in_state);
+}
+
 /*设定湿度*/
 void app_general_push_aircod_humidity(int16_t in_set_humidity)
 {
@@ -964,6 +970,14 @@ int16_t app_general_pull_hotbackwater_set_temp(void)
     return StoRunParameter.hot_backwater_settemp;
 }
 
+int16_t app_general_pull_humidity_setvalue(void)
+{
+    return StoRunParameter.humidity_set;
+}
+int16_t app_general_pull_life_hotwater_settemp(void)
+{
+    return StoRunParameter.set_living_water_temp;
+}
 
 
 bool   aircod_elect_hot_s = false;//电加热
@@ -1239,7 +1253,7 @@ void app_general_aircod_run_task(void)
                 aircod_ec_newwind_s = app_pull_newAir_pwm_value(StoRunParameter.NewAirLevelSet);
                 aircod_ec_backwind_s = app_pull_backAir_pwm_value(StoRunParameter.NewAirLevelSet);
                 /*空调热水模式*/
-
+				app_general_push_two_value_state(0);//开启
 				
                 break;
             }
@@ -1269,10 +1283,12 @@ void app_general_aircod_run_task(void)
                     aircod_ec_backwind_s = app_pull_backAir_pwm_value(StoRunParameter.NewAirLevelSet);
                 }  
 
-				app_general_push_cool_backwind_settemp(200);//制冷回风20
-				app_general_push_cool_humidity_set(550);//湿度50%
-				app_general_push_cool_outwater_settemp(200);//制冷出水20
-				app_general_push_cool_backwater_settemp(250);//制冷回水25
+				app_general_push_cool_backwind_settemp(app_general_pull_coolbackwind_set_temp());//制冷回风20
+				app_general_push_cool_humidity_set(app_general_pull_humidity_setvalue());//湿度50%
+				app_general_push_cool_outwater_settemp(app_general_pull_cooloutwater_set_temp());//制冷出水20
+				app_general_push_cool_backwater_settemp(app_general_pull_coolbackwater_set_temp());//制冷回水25
+				app_general_push_lifehotwater_settemp(app_general_pull_life_hotwater_settemp());//生活热水45
+				app_general_push_two_value_state(1);//开启
                 break;
             }
             case AIR_MODE_HEAT://制热模式
@@ -1301,9 +1317,11 @@ void app_general_aircod_run_task(void)
                 aircod_ec_newwind_s = app_pull_newAir_pwm_value(StoRunParameter.NewAirLevelSet);
                 aircod_ec_backwind_s = app_pull_backAir_pwm_value(StoRunParameter.NewAirLevelSet);
 				
-				app_general_push_hot_backwind_settemp(300);//制热回风30
-				app_general_push_hot_outwater_settemp(350);//制热出水35
-				app_general_push_hot_backwater_settemp(350);//制热回水35
+				//app_general_push_hot_backwind_settemp(app_general_pull_hotbackwind_set_temp());//制热回风30
+				//app_general_push_hot_outwater_settemp(app_general_pull_hotoutwater_set_temp());//制热出水35
+				//app_general_push_hot_backwater_settemp(app_general_pull_hotbackwater_set_temp());//制热回水35
+				app_general_push_lifehotwater_settemp(app_general_pull_life_hotwater_settemp());//生活热水55
+				//app_general_push_two_value_state(1);//开启
                 break;
             }
             case AIR_MODE_HUMIDITY://除湿模式
@@ -1321,11 +1339,21 @@ void app_general_aircod_run_task(void)
                     aircod_ec_newwind_s = app_pull_newAir_pwm_value(StoRunParameter.NewAirLevelSet);
                     aircod_ec_backwind_s = app_pull_backAir_pwm_value(StoRunParameter.NewAirLevelSet);
                 }   
+				//int16_t app_general_pull_coolbackwind_set_temp(void);
+				//int16_t app_general_pull_hotbackwind_set_temp(void);
+				//int16_t app_general_pull_cooloutwater_set_temp(void);
+				//int16_t app_general_pull_coolbackwater_set_temp(void);
+				//int16_t app_general_pull_hotoutwater_set_temp(void);
+				//int16_t app_general_pull_hotbackwater_set_temp(void);
+				//int16_t app_general_pull_humidity_setvalue(void);
+				//int16_t app_general_pull_life_hotwater_settemp(void);
 
-				app_general_push_cool_backwind_settemp(200);//制冷回风20
-				app_general_push_cool_humidity_set(550);//湿度50%
-				app_general_push_cool_outwater_settemp(200);//制冷出水20
-				app_general_push_cool_backwater_settemp(250);//制冷回水25
+				app_general_push_cool_backwind_settemp(app_general_pull_coolbackwind_set_temp());//制冷回风20
+				app_general_push_cool_humidity_set(app_general_pull_humidity_setvalue());//湿度50%
+				app_general_push_cool_outwater_settemp(app_general_pull_cooloutwater_set_temp());//制冷出水20
+				app_general_push_cool_backwater_settemp(app_general_pull_coolbackwater_set_temp());//制冷回水25
+				app_general_push_lifehotwater_settemp(app_general_pull_life_hotwater_settemp());//生活热水45
+				app_general_push_two_value_state(1);//开启
                 break;
             }
             default:
